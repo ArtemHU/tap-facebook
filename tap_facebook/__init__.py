@@ -251,11 +251,12 @@ def rest(account):
     response = account.get_insights(fields = ['ad_id'], params = {'limit': 1})
     rate_limit = json.loads(response.headers()['x-fb-ads-insights-throttle'])
     LOGGER.info("The percentage of allocated capacity for the associated ad account_id has consumed:  %s", rate_limit['acc_id_util_pct'])
-    # if rate_limit['acc_id_util_pct'] > 70:
-    #     while(rate_limit['acc_id_util_pct'] > 5):
-    #         time.sleep(60)
-    #         response = account.get_insights(fields = ['ad_id'], params = {'limit': 1})
-    #         rate_limit = json.loads(response.headers()['x-fb-ads-insights-throttle'])
+    if rate_limit['acc_id_util_pct'] > 70:
+        while(rate_limit['acc_id_util_pct'] > 5):
+            time.sleep(60)
+            response = account.get_insights(fields = ['ad_id'], params = {'limit': 1})
+            rate_limit = json.loads(response.headers()['x-fb-ads-insights-throttle'])
+            
 
 
 # AdCreative is not an iterable stream as it uses the batch endpoint
@@ -790,11 +791,13 @@ def get_streams_to_sync(account, catalog, state):
     streams = []
     for stream in STREAMS:
         catalog_entry = next((s for s in catalog.streams if s.tap_stream_id == stream), None)
-        streams.append(initialize_stream(account, catalog_entry, state))
-        # if catalog_entry and catalog_entry.is_selected():
-        #     # TODO: Don't need name and stream_alias since it's on catalog_entry
-        #     name = catalog_entry.stream
-        #     stream_alias = catalog_entry.stream_alias
+        init_stream = initialize_stream(account, catalog_entry, state)
+        streams.append(init_stream)
+        # streams.append(initialize_stream(account, catalog_entry, state))
+        if catalog_entry and catalog_entry.is_selected():
+              # TODO: Don't need name and stream_alias since it's on catalog_entry
+              name = catalog_entry.stream
+              stream_alias = catalog_entry.stream_alias
         #     streams.append(initialize_stream(account, catalog_entry, state))
     return streams
 
