@@ -282,7 +282,7 @@ class AdCreative(Stream):
                 api_batch.execute()
                 api_batch = API.new_batch()
             
-            rest(self.account)
+            #rest(self.account)
             # Add a call to the batch with the full object
             obj.api_get(fields=self.fields(),
                         batch=api_batch,
@@ -344,7 +344,7 @@ class Ads(IncrementalStream):
         # Added retry_pattern to handle AttributeError raised from ad.api_get() below
         @retry_pattern(backoff.expo, (FacebookRequestError, AttributeError), max_tries=5, factor=5)
         def prepare_record(ad):
-            rest(self.account)
+            #rest(self.account)
             return ad.api_get(fields=self.fields()).export_all_data()
 
         if CONFIG.get('include_deleted', 'false').lower() == 'true':
@@ -393,7 +393,7 @@ class AdSets(IncrementalStream):
         # Added retry_pattern to handle AttributeError raised from ad_set.api_get() below
         @retry_pattern(backoff.expo, (FacebookRequestError, AttributeError), max_tries=5, factor=5)
         def prepare_record(ad_set):
-            rest(self.account)
+            #rest(self.account)
             return ad_set.api_get(fields=self.fields()).export_all_data()
 
         if CONFIG.get('include_deleted', 'false').lower() == 'true':
@@ -445,7 +445,7 @@ class Campaigns(IncrementalStream):
         @retry_pattern(backoff.expo, (FacebookRequestError, AttributeError), max_tries=5, factor=5)
         def prepare_record(campaign):
             """If campaign.ads is selected, make the request and insert the data here"""
-            rest(self.account)
+            #rest(self.account)
             campaign_out = campaign.api_get(fields=fields).export_all_data()
             if pull_ads:
                 campaign_out['ads'] = {'data': []}
@@ -504,7 +504,7 @@ class Leads(Stream):
                 api_batch.execute()
                 api_batch = API.new_batch()
 
-            rest(self.account)
+            #rest(self.account)
             # Add a call to the batch with the full object
             obj.api_get(fields=self.fields(),
                         batch=api_batch,
@@ -684,7 +684,7 @@ class AdsInsights(Stream):
         job = self.account.get_insights( # pylint: disable=no-member
             params=params,
             is_async=True)
-        rest(self.account)
+        #rest(self.account)
         status = None
         time_start = time.time()
         sleep_time = 10
