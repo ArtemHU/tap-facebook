@@ -45,7 +45,7 @@ INSIGHTS_MAX_WAIT_TO_START_SECONDS = 5 * 60
 INSIGHTS_MAX_WAIT_TO_FINISH_SECONDS = 30 * 60
 INSIGHTS_MAX_ASYNC_SLEEP_SECONDS = 5 * 60
 
-RESULT_RETURN_LIMIT = 10
+RESULT_RETURN_LIMIT = 100
 
 REQUEST_TIMEOUT = 300
 
@@ -790,11 +790,12 @@ def get_streams_to_sync(account, catalog, state):
     streams = []
     for stream in STREAMS:
         catalog_entry = next((s for s in catalog.streams if s.tap_stream_id == stream), None)
-        if catalog_entry and catalog_entry.is_selected():
-            # TODO: Don't need name and stream_alias since it's on catalog_entry
-            name = catalog_entry.stream
-            stream_alias = catalog_entry.stream_alias
-            streams.append(initialize_stream(account, catalog_entry, state))
+        streams.append(initialize_stream(account, catalog_entry, state))
+        # if catalog_entry and catalog_entry.is_selected():
+        #     # TODO: Don't need name and stream_alias since it's on catalog_entry
+        #     name = catalog_entry.stream
+        #     stream_alias = catalog_entry.stream_alias
+        #     streams.append(initialize_stream(account, catalog_entry, state))
     return streams
 
 def transform_date_hook(data, typ, schema):
