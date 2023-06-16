@@ -791,14 +791,14 @@ def get_streams_to_sync(account, catalog, state):
     streams = []
     for stream in STREAMS:
         catalog_entry = next((s for s in catalog.streams if s.tap_stream_id == stream), None)
-        # init_stream = initialize_stream(account, catalog_entry, state)
-        # streams.append(init_stream)
+        init_stream = initialize_stream(account, catalog_entry, state)
+        streams.append(init_stream)
         # streams.append(initialize_stream(account, catalog_entry, state))
         if catalog_entry and catalog_entry.is_selected():
               # TODO: Don't need name and stream_alias since it's on catalog_entry
               name = catalog_entry.stream
               stream_alias = catalog_entry.stream_alias
-              streams.append(initialize_stream(account, catalog_entry, state))
+            #   streams.append(initialize_stream(account, catalog_entry, state))
     return streams
 
 def transform_date_hook(data, typ, schema):
